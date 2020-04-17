@@ -29,3 +29,6 @@
 
 ## Save a single frame of video to jpg file
    gst-launch-1.0 videotestsrc num-buffers=1 ! jpegenc !   filesink location=videotestsrc-frame.jpg
+
+## Recording audio and video from webcam
+   gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, width=640, height=480 ! videoconvert ! queue ! vp8enc deadline=1 ! webmmux name=mux ! filesink location=test_rob.webm  pulsesrc ! audioconvert ! vorbisenc ! mux.
