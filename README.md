@@ -32,3 +32,9 @@
 
 ## Recording audio and video from webcam
    gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, width=640, height=480 ! videoconvert ! queue ! vp8enc deadline=1 ! webmmux name=mux ! filesink location=test_rob.webm  pulsesrc ! audioconvert ! vorbisenc ! mux.
+
+## Play youtube video (with audio)
+GST_DEBUG=3 gst-launch-1.0 souphttpsrc is-live=true location="$(youtube-dl --format "best[ext=mp4][protocol=https]" --get-url https://www.youtube.com/watch?v=ndl1W4ltcmg)" ! qtdemux name=demuxer  demuxer. ! queue ! avdec_h264 ! autovideosink  demuxer.audio_0 ! avdec_aac ! autoaudiosink
+
+
+
