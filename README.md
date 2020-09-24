@@ -129,4 +129,4 @@ OR
 
 ### udpsrc to rtspclientsink (using rtsp-simple-server from https://github.com/aler9/rtsp-simple-server)
 
-	gst-launch-1.0 filesrc location=file.mp4 ! qtdemux ! rtspclientsink location=rtsp://localhost:8554/mystream
+	gst-launch-1.0 udpsrc port=9500 ! "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96, height=(int)480, width=(int)640" ! rtph264depay ! rtspclientsink location=rtsp://localhost:8554/mystream
