@@ -1,3 +1,9 @@
+| Source/Sink   |      udpsink     |  filesink | autovideosink | 
+| v4l2src  |  N/A | ("v4ls2src_to_filesink") | N/A |
+| udpsrc |    N/A  |  N/A  | N/A |
+
+
+
 ### transmit gstreamer pipeline from laptop usb camera
 
 	gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw, format=I420, width=(int)1920, height=(int)1080, framerate=(fraction)30/1' ! x264enc tune=zerolatency ! rtph264pay config-interval=1 pt=96 ! udpsink host=192.168.0.11 port=9500 sync=false async=false
@@ -18,7 +24,7 @@
 
 	gst-launch-1.0 udpsrc port=9500 ! application/x-rtp, encoding-name=H264, payload=96, height=720, width=1280 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! xvimagesink
 
-### Save webcam video to webm/vp8 file format
+### Save webcam video to webm/vp8 file format {: id="v4ls2src_to_filesink" }
 
 	gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, width=640, height=480 ! videoconvert ! queue ! vp8enc deadline=1 ! webmmux ! filesink location=test_rob.webm
 
