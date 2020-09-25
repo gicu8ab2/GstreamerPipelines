@@ -18,10 +18,6 @@
 
 	gst-launch-1.0 udpsrc port=9500 ! application/x-rtp, encoding-name=H264, payload=96, height=720, width=1280 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! xvimagesink
 
-### receive pipepline for reading video from Digital Ocean server
-
-	gst-launch-1.0 rtspsrc location=rtsp://104.248.4.24:554/test latency=0 ! decodebin ! videoconvert ! xvimagesink
-
 ### Save webcam video to webm/vp8 file format
 
 	gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, width=640, height=480 ! videoconvert ! queue ! vp8enc deadline=1 ! webmmux ! filesink location=test_rob.webm
@@ -93,7 +89,12 @@ OR
 
 ### filesrc to udpsink
 
-	gst-launch-1.0 filesrc location=../RobWebCam_recordings/video_only2.mp4 ! decodebin ! x264enc ! rtph264pay ! udpsink host=127.0.0.1 port=9500 sync=false async=false 
+	gst-launch-1.0 filesrc location=Videos/RobWebCam_recordings/video_only2.mp4 ! decodebin ! x264enc tune=zerolatency ! rtph264pay ! udpsink host=127.0.0.1 port=9500 sync=false async=false 
+	
+or, to avoid having to decode and re-encode, a better way is:
+	
+	gst-launch-1.0 filesrc location=Videos/RobWebCam_recordings/video_only2.mp4 ! qtdemux ! video/x-h264 ! rtph264pay config-interval=1 pt=96 ! udpsink host=127.0.0.1 port=9500
+
 
 ### videotestsrc (uncompressed video) to udpsink
 
@@ -112,21 +113,26 @@ OR
 
 	gst-launch-1.0 udpsrc port=9500 ! "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96, height=(int)480, width=(int)640" ! rtph264depay ! h264parse ! mp4mux ! filesink location=test.mp4
 
-### rtspsrc to autovideosink
-
-	gst-launch-1.0 rtspsrc location=rtsp://104.248.4.24:554/test latency=200 ! decodebin ! queue ! videoconvert ! autovideosink sync=false
-
 
 ### filesrc to rtspclientsink (must run rtsp-simple-server from https://github.com/aler9/rtsp-simple-server)
 
 	gst-launch-1.0 filesrc location=file.mp4 ! qtdemux ! rtspclientsink location=rtsp://localhost:8554/mystream
 	
 
-### rtspsrc to autovideosink (for above stream publish command)
+### rtspsrc to autovideosink
 
-	gst-launch-1.0 rtspsrc location=rtsp://localhost:8554/mystream ! rtph264depay ! decodebin ! autovideosink sync=false
+for above stream publish command:
 
+	gst-launch-1.0 rtspsrc location=rtsp://localhost:8554/mystream latency=200 ! decodebin ! queue ! videoconvert ! autovideosink sync=false
+	
+or for DO server:
+
+	gst-launch-1.0 rtspsrc location=rtsp://104.248.4.24:554/test latency=200 ! decodebin ! queue ! videoconvert ! autovideosink sync=false
 
 ### udpsrc to rtspclientsink (using rtsp-simple-server from https://github.com/aler9/rtsp-simple-server)
 
 	gst-launch-1.0 udpsrc port=9500 ! "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96, height=(int)480, width=(int)640" ! rtph264depay ! rtspclientsink location=rtsp://localhost:8554/mystream
+
+
+
+
