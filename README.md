@@ -73,7 +73,7 @@ OR (with Nvidia's videoconvert)
 
 OR (to Digital Ocean droplet for video forwarding)
 
-	gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw, width=1920, height=1080' ! videoconvert ! x264enc tune=zerolatency ! rtph264pay config-interval=1 pt=96 ! udpsink host=104.248.4.24 port=5600 sync=false async=false
+	gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw, width=1920, height=1080' ! videoconvert ! x264enc tune=zerolatency ! rtph264pay config-interval=1 pt=96 ! udpsink host=$DO_IP_ADDRESS port=$DO_OUTPORT sync=false async=false
 
 ### v4l2src to shmsink
 
@@ -127,7 +127,7 @@ for above stream publish command:
 	
 or for DO server:
 
-	gst-launch-1.0 rtspsrc location=rtsp://104.248.4.24:554/test latency=200 ! decodebin ! queue ! videoconvert ! autovideosink sync=false
+	gst-launch-1.0 rtspsrc location=rtsp://$DO_IP_ADDRESS:$DO_INPORT/test latency=200 ! decodebin ! queue ! videoconvert ! autovideosink sync=false
 
 ### udpsrc to rtspclientsink (using rtsp-simple-server from https://github.com/aler9/rtsp-simple-server)
 
