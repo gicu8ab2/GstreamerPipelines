@@ -43,6 +43,10 @@
 ### Play youtube video (with audio)
 
 	T_DEBUG=3 gst-launch-1.0 souphttpsrc is-live=true location="$(youtube-dl --format "best[ext=mp4][protocol=https]" --get-url https://www.youtube.com/watch?v=ndl1W4ltcmg)" ! qtdemux name=demuxer  demuxer. ! queue ! avdec_h264 ! autovideosink  demuxer.audio_0 ! avdec_aac ! autoaudiosink
+	
+### Save youtube video to file
+
+	gst-launch-1.0 souphttpsrc is-live=true location="$(youtube-dl --format "best[ext=mp4][protocol=https]" --get-url https://www.youtube.com/watch?v=ndl1W4ltcmg)" ! filesink location=video.mp4 -e
 
 
 ### filesrc (compressed video) to shmsink
