@@ -145,3 +145,6 @@ or for DO server:
 	gst-launch-1.0 -v ximagesrc ! video/x-raw,framerate=20/1 ! videoscale ! videoconvert ! x264enc tune=zerolatency bitrate=500 speed-preset=superfast ! rtph264pay  ! udpsink host=$DO_IP_ADDRESS port=$DO_INPORT
 	
 	
+### ksvideosrc (Microsoft Windows webcam) to Digital Ocean server vis udpsink
+
+	\gstreamer\1.0\mingw_x86_64\bin\gst-launch-1.0.exe ksvideosrc ! "video/x-raw, width=(int)640, height=(int)480, framerate=(fraction)30/1" ! videoconvert ! x264enc tune=zerolatency ! rtph264pay config-interval=1 pt=96 ! udpsink host=$DO_IP_ADDRESS port=$DO_INPORT sync=false async=false
