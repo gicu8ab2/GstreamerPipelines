@@ -148,3 +148,8 @@ or for DO server:
 ### ksvideosrc (Microsoft Windows webcam) to Digital Ocean server vis udpsink
 
 	\gstreamer\1.0\mingw_x86_64\bin\gst-launch-1.0.exe ksvideosrc ! "video/x-raw, width=(int)640, height=(int)480, framerate=(fraction)30/1" ! videoconvert ! x264enc tune=zerolatency ! rtph264pay config-interval=1 pt=96 ! udpsink host=$DO_IP_ADDRESS port=$DO_INPORT sync=false async=false
+
+
+## Send Amcrest IP camera video feed to current display
+
+	gst-launch-1.0 rtspsrc location="rtsp://admin:[password]@[IPaddress]:554/cam/realmonitor?channel=1&subtype=0" ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
